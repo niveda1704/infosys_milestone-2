@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Zap, ArrowRight, Mail, Lock, User, Building2, ShieldCheck, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Zap, ArrowRight, Mail, Lock, User, Building2, ShieldCheck, Sparkles, CheckCircle2, AlertCircle } from 'lucide-react';
 import axiosClient from '../api/axiosClient';
 
 export default function Login() {
@@ -8,10 +8,14 @@ export default function Login() {
   const [role, setRole] = useState('candidate'); // 'candidate' | 'recruiter' | 'admin'
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
   const [googleLoading, setGoogleLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setErrorMessage(null);
+    setLoading(true);
     try {
       if (email && password) {
         const res = await axiosClient.post('/auth/login', { email, password });
@@ -20,17 +24,28 @@ export default function Login() {
           localStorage.setItem('role', res.data.role || role);
           localStorage.setItem('user_name', res.data.name || email.split('@')[0]);
           localStorage.setItem('user_id', res.data.user_id || 'usr-001');
+
+          if (role === 'candidate') {
+            navigate('/discovery');
+          } else if (role === 'recruiter') {
+            navigate('/recruiter-dashboard');
+          } else if (role === 'admin') {
+            navigate('/admin-dashboard');
+          }
+          return;
         }
       }
     } catch (err) {
       console.warn('Backend login notice:', err?.response?.data?.detail || err.message);
-    }
-    if (role === 'candidate') {
-      navigate('/discovery');
-    } else if (role === 'recruiter') {
-      navigate('/recruiter-dashboard');
-    } else if (role === 'admin') {
-      navigate('/admin-dashboard');
+      if (err?.response?.status === 401) {
+        setErrorMessage('Invalid email or password. If you are using your personal email, please register first using "Create Profile" below.');
+      } else if (err?.code === 'ERR_NETWORK' || !err?.response) {
+        setErrorMessage('Backend server is not reachable on port 8000. Please start the backend service.');
+      } else {
+        setErrorMessage(err?.response?.data?.detail || 'Login failed. Please verify your credentials.');
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -115,6 +130,14 @@ export default function Login() {
             </button>
           </div>
 
+          {/* Error Alert */}
+          {errorMessage && (
+            <div className="p-3 bg-rose-500/20 border border-rose-500/40 rounded-xl text-xs text-rose-200 flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
           {/* Transparent Input Form */}
           <form onSubmit={handleLogin} className="space-y-3">
             <div>
@@ -127,7 +150,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={
-                    role === 'candidate' ? 'alex@example.com' :
+                    role === 'candidate' ? 'nivedasree1704@gmail.com' :
                     role === 'recruiter' ? 'hr@techcorp.com' : 'admin@swipex.io'
                   } 
                   className="w-full pl-9 pr-3 py-2 bg-black/20 border border-white/10 rounded-xl text-xs text-white placeholder:text-purple-200/40 focus:outline-none focus:border-purple-400 focus:bg-black/40 transition"
@@ -160,9 +183,14 @@ export default function Login() {
 
             <button 
               type="submit" 
-              className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-purple-600/40 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 mt-2"
+              disabled={loading}
+              className="w-full py-2.5 bg-purple-600 hover:bg-purple-500 disabled:opacity-60 text-white text-xs font-bold rounded-xl shadow-lg shadow-purple-600/40 transform hover:-translate-y-0.5 transition-all duration-200 flex items-center justify-center gap-2 mt-2"
             >
-              Sign In as {role.charAt(0).toUpperCase() + role.slice(1)} <ArrowRight className="w-3.5 h-3.5" />
+              {loading ? (
+                <span>Signing in...</span>
+              ) : (
+                <>Sign In as {role.charAt(0).toUpperCase() + role.slice(1)} <ArrowRight className="w-3.5 h-3.5" /></>
+              )}
             </button>
           </form>
 

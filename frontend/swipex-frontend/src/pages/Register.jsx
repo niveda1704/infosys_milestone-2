@@ -30,6 +30,9 @@ export default function Register() {
           localStorage.setItem('user_id', res.data.user_id);
           localStorage.setItem('user_name', fullName || email.split('@')[0]);
           localStorage.setItem('role', role === 'candidate' ? 'Job Seeker' : role === 'recruiter' ? 'Recruiter' : 'Admin');
+          if (res.data?.access_token) {
+            localStorage.setItem('access_token', res.data.access_token);
+          }
         }
       }
     } catch (err) {
@@ -136,7 +139,7 @@ export default function Register() {
                   required 
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Alex Morgan" 
+                  placeholder="Niveda Sree" 
                   className="w-full pl-9 pr-3 py-2 bg-black/20 border border-white/10 rounded-xl text-xs text-white placeholder:text-purple-200/40 focus:outline-none focus:border-purple-400 focus:bg-black/40 transition"
                 />
               </div>
@@ -152,7 +155,7 @@ export default function Register() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={
-                    role === 'candidate' ? 'alex@example.com' :
+                    role === 'candidate' ? 'nivedasree1704@gmail.com' :
                     role === 'recruiter' ? 'hr@techcorp.com' : 'admin@swipex.io'
                   } 
                   className="w-full pl-9 pr-3 py-2 bg-black/20 border border-white/10 rounded-xl text-xs text-white placeholder:text-purple-200/40 focus:outline-none focus:border-purple-400 focus:bg-black/40 transition"

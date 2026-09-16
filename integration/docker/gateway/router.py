@@ -57,6 +57,13 @@ class RefreshRequest(BaseModel):
     refresh_token: str
 
 MOCK_USERS_DB = {
+    "nivedasree1704@gmail.com": {
+        "user_id": "usr-000",
+        "name": "Niveda Sree",
+        "email": "nivedasree1704@gmail.com",
+        "password": "Password123!",
+        "role": "Job Seeker"
+    },
     "jobseeker@swipex.dev": {
         "user_id": "usr-001",
         "name": "Alex Candidate",
@@ -88,9 +95,7 @@ def create_jwt_token(data: dict, expires_in: int = 3600) -> str:
 # --- Built-in Auth Endpoints ---
 @router.post("/api/v1/auth/register", status_code=201)
 async def register(payload: RegisterRequest):
-    if payload.email in MOCK_USERS_DB:
-        raise HTTPException(status_code=400, detail="User with this email already exists")
-    user_id = f"usr-{len(MOCK_USERS_DB) + 1:03d}"
+    user_id = MOCK_USERS_DB.get(payload.email, {}).get("user_id", f"usr-{len(MOCK_USERS_DB) + 1:03d}")
     MOCK_USERS_DB[payload.email] = {
         "user_id": user_id,
         "name": payload.name,
@@ -98,7 +103,17 @@ async def register(payload: RegisterRequest):
         "password": payload.password,
         "role": payload.role
     }
-    return {"user_id": user_id, "message": "User registered successfully"}
+    token_claims = {"sub": user_id, "name": payload.name, "email": payload.email, "role": payload.role}
+    access_token = create_jwt_token(token_claims, expires_in=7200)
+    refresh_token = create_jwt_token({"sub": user_id, "type": "refresh"}, expires_in=86400 * 7)
+    return {
+        "user_id": user_id,
+        "message": "User registered successfully",
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "role": payload.role,
+        "name": payload.name
+    }
 
 @router.post("/api/v1/auth/login")
 async def login(payload: LoginRequest):
