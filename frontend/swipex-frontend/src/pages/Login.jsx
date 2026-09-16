@@ -23,6 +23,7 @@ export default function Login() {
           localStorage.setItem('access_token', res.data.access_token);
           localStorage.setItem('role', res.data.role || role);
           localStorage.setItem('user_name', res.data.name || email.split('@')[0]);
+          localStorage.setItem('user_email', email);
           localStorage.setItem('user_id', res.data.user_id || 'usr-001');
 
           if (role === 'candidate') {
@@ -56,7 +57,8 @@ export default function Login() {
       if (res.data?.access_token) {
         localStorage.setItem('access_token', res.data.access_token);
         localStorage.setItem('role', res.data.role || 'Job Seeker');
-        localStorage.setItem('user_name', res.data.name || 'Google User');
+        localStorage.setItem('user_name', res.data.name || 'Niveda Sree');
+        localStorage.setItem('user_email', 'nivedasree1704@gmail.com');
         localStorage.setItem('user_id', res.data.user_id || 'usr-oauth-01');
       }
       navigate('/discovery');

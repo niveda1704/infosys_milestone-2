@@ -29,6 +29,7 @@ export default function Register() {
         if (res.data?.user_id) {
           localStorage.setItem('user_id', res.data.user_id);
           localStorage.setItem('user_name', fullName || email.split('@')[0]);
+          localStorage.setItem('user_email', email);
           localStorage.setItem('role', role === 'candidate' ? 'Job Seeker' : role === 'recruiter' ? 'Recruiter' : 'Admin');
           if (res.data?.access_token) {
             localStorage.setItem('access_token', res.data.access_token);

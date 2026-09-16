@@ -12,17 +12,21 @@ export default function Profile() {
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
+  const storedName = localStorage.getItem('user_name') || 'Niveda Sree';
+  const storedEmail = localStorage.getItem('user_email') || 'nivedasree1704@gmail.com';
+  const userInitials = storedName.split(' ').filter(Boolean).map(n => n[0]).join('').substring(0, 2).toUpperCase() || 'NS';
+
   // Profile Form State
   const [profileData, setProfileData] = useState({
-    name: "Alex Morgan",
-    title: "Senior React Architect & Full-Stack Developer",
+    name: storedName,
+    title: "Senior Full-Stack & AI Systems Developer",
     location: "Bangalore, India",
-    email: "alex@example.com",
+    email: storedEmail,
     phone: "+91 98765 43210",
     bio: "Passionate full-stack developer with 5+ years of experience building high-throughput web applications and AI-driven platforms.",
-    github: "https://github.com/alexmorgan",
-    linkedin: "https://linkedin.com/in/alexmorgan",
-    portfolio: "https://alexmorgan.dev"
+    github: `https://github.com/${storedEmail.split('@')[0]}`,
+    linkedin: `https://linkedin.com/in/${storedName.toLowerCase().replace(/\s+/g, '')}`,
+    portfolio: `https://${storedName.toLowerCase().replace(/\s+/g, '')}.dev`
   });
 
   // Skills Tagging State
@@ -31,8 +35,8 @@ export default function Profile() {
 
   // Multiple Resumes Management State
   const [resumes, setResumes] = useState([
-    { id: 1, name: "Alex_Morgan_FullStack_2026.pdf", isPrimary: true, uploadedDate: "Sep 2, 2026", atsScore: 88 },
-    { id: 2, name: "Alex_Morgan_FrontendArchitect.pdf", isPrimary: false, uploadedDate: "Aug 20, 2026", atsScore: 92 }
+    { id: 1, name: `${storedName.replace(/\s+/g, '_')}_FullStack_Resume.pdf`, isPrimary: true, uploadedDate: "Sep 2, 2026", atsScore: 92 },
+    { id: 2, name: `${storedName.replace(/\s+/g, '_')}_Technical_CV.pdf`, isPrimary: false, uploadedDate: "Aug 20, 2026", atsScore: 88 }
   ]);
 
   const showToast = (msg) => {
@@ -222,14 +226,14 @@ export default function Profile() {
                 onClick={() => setIsProfileDropdownOpen(!isProfileDropdownOpen)}
                 className="w-8 h-8 rounded-xl bg-purple-100 border border-purple-300 text-purple-700 font-bold text-xs flex items-center justify-center cursor-pointer hover:bg-purple-200 transition"
               >
-                AM
+                {userInitials}
               </div>
 
               {isProfileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-200 rounded-2xl shadow-xl p-1.5 z-50 text-xs font-bold space-y-0.5">
                   <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                    <p className="text-slate-900 font-black">Alex Morgan</p>
-                    <p className="text-[10px] text-slate-400 font-medium">alex@example.com</p>
+                    <p className="text-slate-900 font-black">{profileData.name}</p>
+                    <p className="text-[10px] text-slate-400 font-medium">{profileData.email}</p>
                   </div>
                   <button onClick={() => navigate('/profile')} className="w-full py-2 px-3 hover:bg-slate-100 rounded-xl text-slate-700 flex items-center gap-2 transition">
                     <User className="w-3.5 h-3.5 text-slate-400" /> Profile
@@ -253,7 +257,7 @@ export default function Profile() {
           {/* Top Info Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-2xs flex flex-col sm:flex-row items-center gap-5">
             <div className="w-20 h-20 rounded-2xl bg-purple-100 border-2 border-purple-300 text-purple-700 text-2xl font-black flex items-center justify-center shadow-xs">
-              AM
+              {userInitials}
             </div>
             <div className="text-center sm:text-left space-y-1">
               <h2 className="text-2xl font-black text-slate-900">{profileData.name}</h2>
