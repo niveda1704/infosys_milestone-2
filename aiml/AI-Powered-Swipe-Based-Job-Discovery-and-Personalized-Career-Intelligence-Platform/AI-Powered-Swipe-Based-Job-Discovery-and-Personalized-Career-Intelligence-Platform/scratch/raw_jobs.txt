@@ -1,0 +1,1 @@
+Let's inspect the lines in `transcript_full.jsonl` where `job_id` appears:

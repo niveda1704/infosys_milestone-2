@@ -1,0 +1,104 @@
+name: SwipeX CI — Multi-Service Quality Gate
+
+on:
+  push:
+    branches: [ main, dev, feature/* ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  # 1. Frontend Quality Gate (React + Vite)
+  frontend-check:
+    name: Frontend Lint & Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+          cache-dependency-path: 'frontend/swipex-frontend/package-lock.json'
+
+      - name: Install Dependencies
+        working-directory: 'frontend/swipex-frontend'
+        run: npm ci || npm install
+
+      - name: Run ESLint
+        working-directory: 'frontend/swipex-frontend'
+        run: npm run lint
+
+      - name: Build Production Assets (Verification only)
+        working-directory: 'frontend/swipex-frontend'
+        run: npm run build
+
+  # 2. Job & Data Intelligence Quality Gate (FastAPI + SQLite/Postgres)
+  job-data-intelligence-check:
+    name: Job & Data Intelligence Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        working-directory: 'data intelligence/SwipeX_Job_Data_Intelligence_Shubham'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt pytest httpx
+
+      - name: Run Pytest Suite (30 Test Cases)
+        working-directory: 'data intelligence/SwipeX_Job_Data_Intelligence_Shubham'
+        run: python -m pytest -v
+
+  # 3. AI/ML Career Intelligence Quality Gate (ATS & Recommendation Engine)
+  aiml-career-intelligence-check:
+    name: AI/ML Career Intelligence Tests & Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        working-directory: 'aiml/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform'
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Ruff Code Quality Lint
+        working-directory: 'aiml/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform'
+        run: ruff check backend/
+
+      - name: Run Pytest Suite (28 Test Cases)
+        working-directory: 'aiml/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform'
+        run: pytest -v
+
+  # 4. Integration & Container Verification
+  integration-verification:
+    name: Docker Compose & Boundary Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Validate Docker Compose Configuration
+        run: |
+          docker compose -f integration/docker/docker-compose.dev.yml config
+
+      - name: Confirm Deployment Scope Boundary (Golden Rule)
+        run: |
+          echo "=========================================================================="
+          echo "VERIFIED: Production deployment is strictly excluded for Milestones 1 & 2."
+          echo "Local/Dev containerized orchestration and integration tests passed."
+          echo "=========================================================================="

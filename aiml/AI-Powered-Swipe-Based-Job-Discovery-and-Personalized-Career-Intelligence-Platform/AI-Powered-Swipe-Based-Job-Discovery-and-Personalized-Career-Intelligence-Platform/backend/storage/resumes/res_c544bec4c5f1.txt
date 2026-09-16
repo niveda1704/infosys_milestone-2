@@ -1,0 +1,3 @@
+Alex Rivera
+Senior Backend Engineer
+Skills: Python, FastAPI, PostgreSQL, Docker.

@@ -1,0 +1,11 @@
+pandas
+scikit-learn
+spacy
+pdfplumber
+pypdf
+fastapi
+uvicorn
+python-multipart
+pytest
+httpx
+ruff

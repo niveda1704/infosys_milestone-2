@@ -1,0 +1,116 @@
+# SwipeX — Unified Local Integration Environment (Milestones 1 & 2)
+# Owner: Intern 5 — Platform, Testing & Deployment
+# Orchestrates all microservices, databases, caching, and frontend.
+# NOTE: Production deployment is strictly out of scope until after Milestone 4.
+
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: swipex-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-swipex}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-swipex_dev_pass}
+      POSTGRES_DB: ${POSTGRES_DB:-swipex_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - swipex_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-swipex}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - swipex-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: swipex-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - swipex-net
+
+  job_service:
+    build:
+      context: ../../data intelligence/SwipeX_Job_Data_Intelligence_Shubham
+      dockerfile: Dockerfile
+    container_name: swipex-job-service
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: sqlite:///./swipex_dev.db
+      REDIS_URL: redis://redis:6379/0
+      PORT: 8000
+    ports:
+      - "8002:8000"
+    depends_on:
+      redis:
+        condition: service_healthy
+    networks:
+      - swipex-net
+
+  resume_service:
+    build:
+      context: ../../aiml/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform/AI-Powered-Swipe-Based-Job-Discovery-and-Personalized-Career-Intelligence-Platform/backend
+      dockerfile: ../../../../integration/docker/career.Dockerfile
+    container_name: swipex-resume-service
+    restart: unless-stopped
+    environment:
+      JOB_SERVICE_URL: http://job_service:8000
+      PORT: 8000
+    ports:
+      - "8003:8000"
+    depends_on:
+      - job_service
+    networks:
+      - swipex-net
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    container_name: swipex-gateway
+    restart: unless-stopped
+    environment:
+      JOB_SERVICE_URL: http://job_service:8000
+      RESUME_SERVICE_URL: http://resume_service:8000
+      AUTH_SERVICE_URL: http://gateway:8000
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-swipex-milestone-dev-secret-key-32chars}
+    ports:
+      - "8000:8000"
+    depends_on:
+      - job_service
+      - resume_service
+    networks:
+      - swipex-net
+
+  frontend:
+    build:
+      context: ../../frontend/swipex-frontend
+      dockerfile: ../integration/docker/frontend.Dockerfile
+    container_name: swipex-frontend
+    restart: unless-stopped
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000/api/v1
+    ports:
+      - "5173:5173"
+    depends_on:
+      - gateway
+    networks:
+      - swipex-net
+
+volumes:
+  swipex_pg_data:
+
+networks:
+  swipex-net:
+    driver: bridge

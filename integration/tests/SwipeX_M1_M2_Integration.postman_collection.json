@@ -1,0 +1,153 @@
+{
+  "info": {
+    "_postman_id": "swipex-milestones-1-and-2",
+    "name": "SwipeX Master Integration Collection (Milestones 1 & 2)",
+    "description": "Shared Postman collection for all five interns maintained by Intern 5 (QA & Integration Lead).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api/v1",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Authentication & RBAC",
+      "item": [
+        {
+          "name": "Register Candidate",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alex Chen\",\n  \"email\": \"alex@example.com\",\n  \"password\": \"SecurePass123!\",\n  \"role\": \"Job Seeker\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/register", "host": ["{{base_url}}"], "path": ["auth", "register"]}
+          }
+        },
+        {
+          "name": "Login (Candidate)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "if (jsonData.access_token) {",
+                  "    pm.collectionVariables.set('access_token', jsonData.access_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"jobseeker@swipex.dev\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/auth/login", "host": ["{{base_url}}"], "path": ["auth", "login"]}
+          }
+        },
+        {
+          "name": "Get Profile / Me (Protected)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/auth/me", "host": ["{{base_url}}"], "path": ["auth", "me"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Job & Data Intelligence",
+      "item": [
+        {
+          "name": "List Jobs (Paginated with Filters)",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/jobs?type=Startup&location=Remote", "host": ["{{base_url}}"], "path": ["jobs"], "query": [{"key": "type", "value": "Startup"}, {"key": "location", "value": "Remote"}]}
+          }
+        },
+        {
+          "name": "Search Jobs by Keyword",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/jobs/search?q=Python", "host": ["{{base_url}}"], "path": ["jobs", "search"], "query": [{"key": "q", "value": "Python"}]}
+          }
+        },
+        {
+          "name": "Get Job Details by ID",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/jobs/1", "host": ["{{base_url}}"], "path": ["jobs", "1"]}
+          }
+        },
+        {
+          "name": "List Companies & Startups",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/companies", "host": ["{{base_url}}"], "path": ["companies"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Swipe Actions & Interactions",
+      "item": [
+        {
+          "name": "Swipe Right (Apply / Save)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Content-Type", "value": "application/json"},
+              {"key": "Authorization", "value": "Bearer {{access_token}}"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"job_id\": 1,\n  \"direction\": \"right\",\n  \"user_id\": \"usr-001\"\n}"
+            },
+            "url": {"raw": "{{base_url}}/swipes", "host": ["{{base_url}}"], "path": ["swipes"]}
+          }
+        },
+        {
+          "name": "Get User Swipe History",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{access_token}}"}],
+            "url": {"raw": "{{base_url}}/swipes/history", "host": ["{{base_url}}"], "path": ["swipes", "history"]}
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. AI/ML Career Intelligence (ATS & Recommendations)",
+      "item": [
+        {
+          "name": "Get Heuristic ATS Score",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/resume/res-001/ats-score?job_id=1", "host": ["{{base_url}}"], "path": ["resume", "res-001", "ats-score"], "query": [{"key": "job_id", "value": "1"}]}
+          }
+        },
+        {
+          "name": "Get Personalized Job Recommendations",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "{{base_url}}/recommendations?user_id=usr-001", "host": ["{{base_url}}"], "path": ["recommendations"], "query": [{"key": "user_id", "value": "usr-001"}]}
+          }
+        }
+      ]
+    }
+  ]
+}
