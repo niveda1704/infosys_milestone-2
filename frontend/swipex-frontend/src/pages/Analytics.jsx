@@ -150,7 +150,7 @@ export default function Analytics() {
       )}
 
       {/* 2. MAIN WORKSPACE */}
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="grow flex flex-col min-w-0">
         
         {/* Global Header */}
         <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-6 py-3 flex justify-between items-center shadow-2xs">
@@ -209,7 +209,7 @@ export default function Analytics() {
         </header>
 
         {/* 3. ANALYTICS WORKSPACE CONTENT */}
-        <main className="flex-grow p-6 max-w-6xl mx-auto w-full space-y-6">
+        <main className="grow p-6 max-w-6xl mx-auto w-full space-y-6">
           
           {/* Top High-Level Performance Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

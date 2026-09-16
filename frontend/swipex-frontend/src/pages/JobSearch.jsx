@@ -753,7 +753,7 @@ export default function JobSearch() {
       )}
 
       {/* 2. MAIN WORKSPACE */}
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="grow flex flex-col min-w-0">
         
         {/* Global Header */}
         <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-6 py-3 flex justify-between items-center shadow-2xs">
@@ -812,7 +812,7 @@ export default function JobSearch() {
         </header>
 
         {/* 3. SEARCH & FILTER DIRECTORY CONTENT */}
-        <main className="flex-grow p-6 max-w-7xl mx-auto w-full space-y-6">
+        <main className="grow p-6 max-w-7xl mx-auto w-full space-y-6">
           
           {/* Top Search Bar & Controls */}
           <div className="flex flex-col md:flex-row items-center justify-between gap-4 bg-white p-4 rounded-3xl border border-slate-200 shadow-2xs">
@@ -1002,15 +1002,15 @@ export default function JobSearch() {
                       {/* Metadata */}
                       <div className="grid grid-cols-3 gap-2 text-[11px] text-slate-600 font-medium py-2 border-y border-slate-100">
                         <div className="flex items-center gap-1.5 truncate">
-                          <MapPin className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+                          <MapPin className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                           <span className="truncate">{job.location}</span>
                         </div>
                         <div className="flex items-center gap-1.5 truncate">
-                          <DollarSign className="w-3.5 h-3.5 text-emerald-600 flex-shrink-0" />
+                          <DollarSign className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                           <span className="truncate">{job.salary}</span>
                         </div>
                         <div className="flex items-center gap-1.5 justify-end">
-                          <Users className="w-3.5 h-3.5 text-purple-600 flex-shrink-0" />
+                          <Users className="w-3.5 h-3.5 text-purple-600 shrink-0" />
                           <span className="font-bold text-emerald-600">{job.competitionLevel} Risk</span>
                         </div>
                       </div>

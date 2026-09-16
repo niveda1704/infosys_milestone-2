@@ -193,7 +193,7 @@ export default function Profile() {
       )}
 
       {/* 2. MAIN WORKSPACE */}
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="grow flex flex-col min-w-0">
         
         {/* Global Header */}
         <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-6 py-3 flex justify-between items-center shadow-2xs">
@@ -252,7 +252,7 @@ export default function Profile() {
         </header>
 
         {/* 3. PROFILE CONTENT */}
-        <main className="flex-grow p-6 max-w-6xl mx-auto w-full space-y-6">
+        <main className="grow p-6 max-w-6xl mx-auto w-full space-y-6">
           
           {/* Top Info Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-2xs flex flex-col sm:flex-row items-center gap-5">
@@ -348,7 +348,7 @@ export default function Profile() {
                     placeholder="Add a new skill (e.g. Docker, GraphQL)..."
                     value={newSkill}
                     onChange={(e) => setNewSkill(e.target.value)}
-                    className="flex-grow px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-purple-600"
+                    className="grow px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:border-purple-600"
                   />
                   <button type="submit" className="px-3 py-1.5 bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold rounded-xl flex items-center gap-1">
                     <Plus className="w-3.5 h-3.5" /> Add Tag
@@ -374,7 +374,7 @@ export default function Profile() {
                   <div key={resume.id} className={`p-3.5 rounded-2xl border transition space-y-2 ${resume.isPrimary ? 'bg-purple-50/50 border-purple-300' : 'bg-slate-50 border-slate-200'}`}>
                     <div className="flex justify-between items-start gap-2">
                       <div>
-                        <p className="text-xs font-bold text-slate-900 truncate max-w-[180px]">{resume.name}</p>
+                        <p className="text-xs font-bold text-slate-900 truncate max-w-45">{resume.name}</p>
                         <p className="text-[10px] text-slate-400 font-medium">Uploaded {resume.uploadedDate}</p>
                       </div>
                       <span className="text-[10px] font-black bg-purple-600 text-white px-2 py-0.5 rounded-md">

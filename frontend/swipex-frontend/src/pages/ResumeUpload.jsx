@@ -161,7 +161,7 @@ export default function ResumeUpload() {
       )}
 
       {/* 2. MAIN WORKSPACE */}
-      <div className="flex-grow flex flex-col min-w-0">
+      <div className="grow flex flex-col min-w-0">
         
         {/* Global Header */}
         <header className="w-full bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-30 px-6 py-3 flex justify-between items-center shadow-2xs">
@@ -220,7 +220,7 @@ export default function ResumeUpload() {
         </header>
 
         {/* 3. RESUME WORKSPACE CONTENT */}
-        <main className="flex-grow p-6 max-w-6xl mx-auto w-full space-y-6">
+        <main className="grow p-6 max-w-6xl mx-auto w-full space-y-6">
           
           {/* Top Upload Zone */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-2xs space-y-4">
@@ -351,7 +351,7 @@ export default function ResumeUpload() {
                   <ul className="space-y-1.5">
                     {atsResults.improvements.map((tip, index) => (
                       <li key={index} className="text-xs text-purple-950 font-medium flex items-start gap-2">
-                        <ChevronRight className="w-3.5 h-3.5 text-purple-600 flex-shrink-0 mt-0.5" />
+                        <ChevronRight className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
                         <span>{tip}</span>
                       </li>
                     ))}
